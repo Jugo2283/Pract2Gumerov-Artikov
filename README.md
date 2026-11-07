@@ -2,38 +2,40 @@
 
 **Дисциплина:** Программирование и прототипирование ИТ-решений  
 **Направление:** 09.03.03 Прикладная информатика  
-**Траектория:** Вариант А (Базовая)  
+**Траектория:** Вариант Б (Продвинутая)  
 **Индивидуальный параметр:** N = 8 (Студент 1: 6, Студент 2: 2)  
 
 ## 1. Словарь данных (Data Dictionary)
 
-| Поле (ключ) | Описание смысла поля | Тип Python | Тип JSON | Обяз.? | Ваше значение (N=8) |
+| Поле (путь JSON) | Описание смысла поля | Тип Python | Тип JSON | Обяз.? | Ваше значение (N=8) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **well_id** | Идентификатор (код) скважины | str | string | Да | "W-108" |
-| **field_name** | Название месторождения (Челлендж 1) | str | string | Да | "Приобское" |
-| **depth_m** | Глубина скважины, м | int | integer | Да | 1900 |
-| **q_liq** | Суточный дебит жидкости, м³/сут | float | number | Да | 73.0 |
-| **w_pct** | Обводнённость продукции, % | float | number | Да | 28.0 |
-| **is_active** | Признак работы скважины | bool | boolean | Да | true |
-| **pump** | Вложенный объект: погружной насос | dict | object | Да | {...} |
-| **pump.model** | Модель насоса ЭЦН | str | string | Да | "ЭЦН5-80-1800" |
-| **pump.power_kw** | Мощность насоса, кВт | float | number | Да | 80.0 |
+| **pad_id** | Номер кустовой площадки | str | string | Да | "PAD-18" |
+| **well_id** | Код скважины | str | string | Да | "W-208" |
+| **p_res_mpa** | Пластовое давление, МПа | float | number | Да | 26.0 |
+| **p_bhp_mpa** | Забойное давление, МПа | float | number | Да | 15.2 |
+| **mode** | Режим эксплуатации скважины | str | string | Да | "PUMPING" |
+| **is_online** | Признак связи со станцией (Челлендж 1) | bool | boolean | Да | true |
+| **sensors** | Список замеров с датчиков | list[dict] | array | Да | [{...}, {...}, {...}] |
+| **sensors[].code** | Код датчика в массиве | str | string | Да | "T-01", "Q-01", "P-01" |
+| **sensors[].value** | Измеренное показание датчика | float | number | Да | 57.0, 92.0, 14.0 |
+| **sensors[].unit** | Единица измерения датчика | str | string | Да | "C", "m3/d", "MPa" |
 
 ## 2. ER-диаграмма сущностей (Mermaid)
 
 ```mermaid
 erDiagram
- WELL_PASSPORT ||--|| PUMP_UNIT : "содержит (pump)"
- WELL_PASSPORT {
+ TELEMETRY_PACKET ||--|{ SENSOR_ITEM : "включает массив (sensors)"
+ TELEMETRY_PACKET {
+ string pad_id "Код куста"
  string well_id "Код скважины"
- string field_name "Название месторождения"
- integer depth_m "Глубина, м"
- number q_liq "Дебит жидкости, м3/сут"
- number w_pct "Обводненность, %"
- boolean is_active "Статус активности"
+ number p_res_mpa "Пластовое давление, МПа"
+ number p_bhp_mpa "Забойное давление, МПа"
+ string mode "Режим работы"
+ boolean is_online "Статус онлайн"
  }
- PUMP_UNIT {
- string model "Модель насоса ЭЦН"
- number power_kw "Мощность, кВт"
+ SENSOR_ITEM {
+ string code "Код датчика"
+ number value "Показание"
+ string unit "Единица измерения"
  }
 ```
